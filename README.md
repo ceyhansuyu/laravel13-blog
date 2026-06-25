@@ -47,3 +47,7 @@ Follow these steps to install and set up the project in your local development e
     ```bash
     php artisan storage:link
     npm install && npm run dev
+
+
+**💡 Important Note on First Setup:**
+You do not need default database seeders or predefined login credentials. Simply navigate to the registration page and create a new account. The system is designed to automatically grant the Founder (highest authorization) role to the very first registered user. Subsequent registrations will default to regular user roles.
