@@ -1,5 +1,7 @@
 # Laravel 13 Blog Script
 
+[![Watch the Video](https://img.youtube.com/vi/WyCB8jVe11M/maxresdefault.jpg)](https://www.youtube.com/watch?v=WyCB8jVe11M)
+
 A minimalist, performance-optimized, and open-source blog platform built with Laravel 13, designed for a clean user experience and fast page load times.
 
 ## 🚀 Features
