@@ -71,73 +71,77 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-        // --- 3. Global Ayarlar (Cache ile Performanslı) ---
-        if (Schema::hasTable('settings')) {
-            $siteSettings = Cache::remember('site_global_settings', 3600, function () {
-                $settings = Setting::pluck('value', 'key')->all();
+        // Konsol komutlarında (composer, artisan vb.) veritabanı sorgusu atmasını engelliyoruz
+        if (! app()->runningInConsole()) {
+            
+            // --- 3. Global Ayarlar (Cache ile Performanslı) ---
+            if (Schema::hasTable('settings')) {
+                $siteSettings = Cache::remember('site_global_settings', 3600, function () {
+                    $settings = Setting::pluck('value', 'key')->all();
 
-                // Doğru (Sadece ihtiyacın olanı seç):
-            $siteSettings = Setting::whereIn('key', ['site_name', 'site_description', 'enable_author_card','enable_registration' ,
-                                                     'enable_social_share', 'google_analytics_id', 'allow_submit_comments', 
-                                                     'allow_show_comments', 'hcaptcha_site_key', 'show_post_date', 'show_updated_date',
-                                                     'toast_duration'
-                                                    ])
+                    // Doğru (Sadece ihtiyacın olanı seç):
+                $siteSettings = Setting::whereIn('key', ['site_name', 'site_description', 'enable_author_card','enable_registration' ,
+                                                             'enable_social_share', 'google_analytics_id', 'allow_submit_comments', 
+                                                             'allow_show_comments', 'hcaptcha_site_key', 'show_post_date', 'show_updated_date',
+                                                             'toast_duration'
+                                                            ])
                       ->pluck('value', 'key')
                       ->toArray();
-                
-                // Burayı object yerine array yapıyoruz
-                return [
-                    'site_name'         => $settings['site_name'] ?? 'Blogum',
-                    'site_description'  => $settings['site_description'] ?? '',
-                    'google_analytics_id' => $settings['google_analytics_id'] ?? null,
-                    'hcaptcha_site_key'  => $settings['hcaptcha_site_key'] ?? null,
-                    'enable_registration'  => (bool) ($settings['enable_registration'] ?? false),
-                    'enable_author_card'  => (bool) ($settings['enable_author_card'] ?? false),
-                    'enable_social_share' => (bool) ($settings['enable_social_share'] ?? false),
-                    'allow_submit_comments' => (bool) ($settings['allow_submit_comments'] ?? false),
-                    'allow_show_comments' => (bool) ($settings['allow_show_comments'] ?? false),
-                    'show_post_date' => (bool) ($settings['show_post_date'] ?? false),
-                    'show_updated_date' => (bool) ($settings['show_updated_date'] ?? false),
-                    'toast_duration'  => $settings['toast_duration'] ?? 500,
-
-                ];
-            });
-
-            View::share('siteSettings', $siteSettings);
-        }
-
-
-        // --- 4. Reklam Ayarları (Cache ile Performanslı) ---
-        if (Schema::hasTable('ad_settings')) {
-            $ad_settings = Cache::remember('site_ad_settings', 3600, function () {
-                // ad_settings tablosundaki ilk kaydı alıyoruz.
-                // Model adının AdSetting olduğunu varsayıyorum (App\Models\AdSetting). 
-                $Adsettings = \App\Models\AdSetting::first();
-
-                // Eğer tabloda henüz kayıt yoksa hata vermemesi için resimdeki varsayılan (default) değerleri döndürüyoruz.
-                return [
-                    'header_active'   => (bool) ($Adsettings->header_active ?? false),
-                    'header_code'     => $Adsettings->header_code ?? null,
                     
-                    'sidebar_active'  => (bool) ($Adsettings->sidebar_active ?? false),
-                    'sidebar_code'    => $Adsettings->sidebar_code ?? null,
-                    
-                    'content_active'  => (bool) ($Adsettings->content_active ?? false),
-                    'content_code'    => $Adsettings->content_code ?? null,
-                    
-                    'footer_active'   => (bool) ($Adsettings->footer_active ?? false),
-                    'footer_code'     => $Adsettings->footer_code ?? null,
-                    
-                    'ad_frequency'    => (int) ($Adsettings->ad_frequency ?? 5),
-                    'max_ads'         => (int) ($Adsettings->max_ads ?? 2),
-                    
-                    'ads_txt_content' => $Adsettings->ads_txt_content ?? null,
-                ];
-            });
+                    // Burayı object yerine array yapıyoruz
+                    return [
+                        'site_name'         => $settings['site_name'] ?? 'Blogum',
+                        'site_description'  => $settings['site_description'] ?? '',
+                        'google_analytics_id' => $settings['google_analytics_id'] ?? null,
+                        'hcaptcha_site_key'  => $settings['hcaptcha_site_key'] ?? null,
+                        'enable_registration'  => (bool) ($settings['enable_registration'] ?? false),
+                        'enable_author_card'  => (bool) ($settings['enable_author_card'] ?? false),
+                        'enable_social_share' => (bool) ($settings['enable_social_share'] ?? false),
+                        'allow_submit_comments' => (bool) ($settings['allow_submit_comments'] ?? false),
+                        'allow_show_comments' => (bool) ($settings['allow_show_comments'] ?? false),
+                        'show_post_date' => (bool) ($settings['show_post_date'] ?? false),
+                        'show_updated_date' => (bool) ($settings['show_updated_date'] ?? false),
+                        'toast_duration'  => $settings['toast_duration'] ?? 500,
 
-            View::share('ad_settings', $ad_settings);
-        }
+                    ];
+                });
 
+                View::share('siteSettings', $siteSettings);
+            }
+
+
+            // --- 4. Reklam Ayarları (Cache ile Performanslı) ---
+            if (Schema::hasTable('ad_settings')) {
+                $ad_settings = Cache::remember('site_ad_settings', 3600, function () {
+                    // ad_settings tablosundaki ilk kaydı alıyoruz.
+                    // Model adının AdSetting olduğunu varsayıyorum (App\Models\AdSetting). 
+                    $Adsettings = \App\Models\AdSetting::first();
+
+                    // Eğer tabloda henüz kayıt yoksa hata vermemesi için resimdeki varsayılan (default) değerleri döndürüyoruz.
+                    return [
+                        'header_active'   => (bool) ($Adsettings->header_active ?? false),
+                        'header_code'     => $Adsettings->header_code ?? null,
+                        
+                        'sidebar_active'  => (bool) ($Adsettings->sidebar_active ?? false),
+                        'sidebar_code'    => $Adsettings->sidebar_code ?? null,
+                        
+                        'content_active'  => (bool) ($Adsettings->content_active ?? false),
+                        'content_code'    => $Adsettings->content_code ?? null,
+                        
+                        'footer_active'   => (bool) ($Adsettings->footer_active ?? false),
+                        'footer_code'     => $Adsettings->footer_code ?? null,
+                        
+                        'ad_frequency'    => (int) ($Adsettings->ad_frequency ?? 5),
+                        'max_ads'         => (int) ($Adsettings->max_ads ?? 2),
+                        
+                        'ads_txt_content' => $Adsettings->ads_txt_content ?? null,
+                    ];
+                });
+
+                View::share('ad_settings', $ad_settings);
+            }
+            
+        } // if (! app()->runningInConsole()) bloğunun sonu
 
 
         // --- 5. Layout ve Meta Yönetimi ---
