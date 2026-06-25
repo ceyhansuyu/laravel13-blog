@@ -10,7 +10,7 @@ A minimalist, performance-optimized, and open-source blog platform built with La
 - **Clean UI/UX:** A minimalist, premium interface built using Tailwind CSS v4.
 - **Media Manager:** Built-in image management supporting modern formats and precise image cropping.
 - **SEO Optimization:** Dynamic and custom SEO description generation for posts.
-- **AJAX Comment System:** Interactive and asynchronous comment sections secured by hCaptcha integration.
+- **Comment System:** Interactive and asynchronous comment sections secured by hCaptcha integration.
 - **Universal Database Schema:** Clean and standard database architecture using English enums (`draft`, `publish`).
 
 ## 🛠️ Tech Stack
