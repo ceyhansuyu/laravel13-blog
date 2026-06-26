@@ -40,7 +40,11 @@ Follow these steps to install and set up the project in your local development e
     ```bash
     cp .env.example .env
     php artisan key:generate
-    
+
+
+**💡 Important Note:** Edit your .env file and set APP_URL=your_domain. This is required for the media library to function correctly.
+
+
 4. **Run database migrations:**
     ```bash
     php artisan migrate
